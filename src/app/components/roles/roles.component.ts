@@ -1,29 +1,32 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { APIResponseModel, IRole } from '../../model/interface/role';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css'
 })
-export class RolesComponent {
+export class RolesComponent implements OnInit{
   
-  firstName: string = "Angular Tutorial";
-  angularVersion = "Version 18";
-
-  version: number = 18;
-  isActive: boolean = false;
-  currentDate: Date = new Date();
-  inputType: string = "radio";
-  selectedState: string = "";
-
-  showWelcomeAlert() {
-    alert("Welcome to Angular 18 Tutoriale")
+  http = inject(HttpClient);//uso la classe HttpClient importata grazie all'inject a livello globale
+  //abbiamo creato un istanza del servizio HttpClient
+  roleList: IRole[] = [];
+  
+  ngOnInit(): void {
+    this.getAllRoles()
   }
 
-  showMessage(message: string) {
-    alert(message)
+  getAllRoles(){
+    this.http.get<APIResponseModel>("https://freeapi.miniprojectideas.com/api/ClientStrive/GetAllRoles").subscribe((res: APIResponseModel)=>{
+      this.roleList = res.data;
+    });
   }
+
+
+
 }
